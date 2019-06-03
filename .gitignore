@@ -1,3 +1,5 @@
+# Coq
+
 .*.aux
 *.a
 *.cma
@@ -28,3 +30,11 @@ lia.cache
 nia.cache
 nlia.cache
 nra.cache
+
+# Nix
+result
+result-*
+
+# Direnv
+.envrc
+.direnv
