@@ -1,8 +1,10 @@
 Require Import Coq.Lists.List.
 Import ListNotations.
 
-Require Import Bool Ascii String.
-Open Scope string_scope.
+Require Import Coq.Bool.Bool Coq.Strings.Ascii.
+Local Open Scope char.
+
+Definition string := list ascii.
 
 Require Import Utils.
 
@@ -22,20 +24,23 @@ Definition eq_ascii (a1 a2 : ascii) :=
 
 Fixpoint eq_string (s1 s2 : string) :=
   match s1, s2 with
-  | EmptyString,  EmptyString  => true
-  | String x1 s1, String x2 s2 => eq_ascii x1 x2 && eq_string s1 s2
-  | _, _                       => false
+  | [], [] => true
+  | x1::s1, x2::s2 => eq_ascii x1 x2 && eq_string s1 s2
+  | _, _ => false
   end.
 
-Fixpoint accept (r : regex) (s : string) : bool :=
-  match r, s with
-    | Eps, "" => true
-    | Sym c, s => eq_string (String c "") s
-    | Alt r1 r2, s => accept r1 s || accept r2 s
+Fixpoint accept (r : regex) (u : string) : bool :=
+  match r, u with
+    | Eps, [] => true
+    | Sym c, u => eq_string [c] u
+    | Alt p q, u => accept p u || accept q u
+    | Seq p q, u =>
+      let seq_map :=
+          map (fun '(u1, u2) => accept p u1 && accept q u2) (split u)
+      in
+      fold_right (fun x y => x || y) false seq_map
     | _,_ =>  false
   end.
 
-Compute (accept Eps "a").
-Compute (accept (Sym "a") "a").
-Compute (accept (Sym "a") "b").
-Compute (accept (Alt (Sym "a") (Sym "b")) "b").
+Compute (accept (Alt (Sym "a") (Sym "b")) ["b"; "a"]).
+Compute (accept (Seq (Sym "a") (Sym "b")) ["a"; "b"]).
