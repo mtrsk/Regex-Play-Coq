@@ -26,6 +26,7 @@ Instance BoolMonoidOr : Monoid bool :=
   (* r_neutral *)
   Proof.
     intros. apply orb_false_r.
+  Defined.
 
 Instance BoolMonoidAnd : Monoid bool :=
   {
@@ -41,6 +42,7 @@ Instance BoolMonoidAnd : Monoid bool :=
   (* r_neutral *)
   Proof.
     intros. apply andb_true_r.
+  Defined.
 
 Instance NatMonoidPlus : Monoid nat :=
   {
@@ -58,6 +60,7 @@ Instance NatMonoidPlus : Monoid nat :=
     intros.
     rewrite <- plus_n_O.
     reflexivity.
+  Defined.
 
 Instance NatMonoidMul : Monoid nat :=
   {
@@ -73,3 +76,4 @@ Instance NatMonoidMul : Monoid nat :=
   (* r_neutral *)
   Proof.
     intros. apply Nat.mul_1_r.
+  Defined.
