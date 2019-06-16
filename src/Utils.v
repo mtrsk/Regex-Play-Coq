@@ -8,21 +8,26 @@ Fixpoint split {X : Type} (l : list X) : list (list X * list X) :=
       ([], c::cs) :: map (fun '(s1, s2) => (c :: s1, s2)) (split cs)
   end.
 
-(* [[c] : p | p <- parts cs] *)
 
-Fixpoint parts_l {X : Type} (l : list X) : list (list (list X)) :=
-  match l with
-    | [] => [[]]
-    | (x::xs) => map (fun p => [x] :: p) (parts_l xs)
+Definition athead {X : Type}
+  (x : X) (xs : list (list X)) :=
+  match xs with
+    | [] => []
+    | (y :: ys) => (x :: y) :: ys
   end.
 
-Compute parts_l [1; 2; 3].
-
-(* [(c : p) : ps | (p:ps) <- parts' cs] *)
-
-Fixpoint parts_r {X : Type} (l : list X) : list (list (list X)) :=
-  match l with
-    | [] => [[]]
-    | (x::xs) => [[]]
+Definition non_empty {X : Type} (xs : list (list X)) :=
+  match xs with
+    | [] => false
+    | _ => true
   end.
 
+Fixpoint parts {X : Type}
+  (xs : list X) : list (list (list X)) :=
+  match xs with
+    | [] => [[]]
+    | [c] => [[[c]]]
+    | (c :: cs) =>
+      flat_map (fun ps => [ athead c ps; [c] :: ps])
+               (filter non_empty (parts cs))
+  end.
