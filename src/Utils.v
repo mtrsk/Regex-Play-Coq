@@ -8,7 +8,6 @@ Fixpoint split {X : Type} (l : list X) : list (list X * list X) :=
       ([], c::cs) :: map (fun '(s1, s2) => (c :: s1, s2)) (split cs)
   end.
 
-
 Definition athead {X : Type}
   (x : X) (xs : list (list X)) :=
   match xs with
@@ -31,3 +30,4 @@ Fixpoint parts {X : Type}
       flat_map (fun ps => [ athead c ps; [c] :: ps])
                (filter non_empty (parts cs))
   end.
+

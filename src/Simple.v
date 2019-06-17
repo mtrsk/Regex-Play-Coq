@@ -4,9 +4,7 @@ Import ListNotations.
 Require Import Coq.Bool.Bool Coq.Strings.Ascii.
 Local Open Scope char.
 
-Definition string := list ascii.
-
-Require Import Utils.
+Require Import Utils AsciiStrings.
 
 Inductive regex : Type :=
   | Eps : regex
@@ -29,6 +27,9 @@ Fixpoint eq_string (s1 s2 : string) :=
   | _, _ => false
   end.
 
+Compute map (fun ui => ui)
+        (map (fun p => parts p) [["a";"b";"c"]]).
+
 Fixpoint accept (r : regex) (u : string) : bool :=
   match r, u with
     | Eps, [] => true
@@ -36,11 +37,9 @@ Fixpoint accept (r : regex) (u : string) : bool :=
     | Alt p q, u => accept p u || accept q u
     | Seq p q, u =>
       let seq_map :=
-          map (fun '(u1, u2) => accept p u1 && accept q u2) (split u)
+          map (fun '(u1, u2) => accept p u1 && accept q u2)
+              (split u)
       in
       fold_right (fun x y => x || y) false seq_map
-    | _,_ =>  false
+    | _,_ => false
   end.
-
-Compute (accept (Alt (Sym "a") (Sym "b")) ["b"; "a"]).
-Compute (accept (Seq (Sym "a") (Sym "b")) ["a"; "b"]).
