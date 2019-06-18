@@ -1,12 +1,9 @@
 Require Import Coq.Bool.Bool Coq.Arith.PeanoNat.
 
-Class Semiring (X : Type) :=
+Class Semiring {X : Type}
+  (zero : X) (one : X)
+  (add : X -> X -> X) (mul : X -> X -> X) :=
   {
-    add : X -> X -> X;
-    mul : X -> X -> X;
-    zero : X;
-    one : X;
-
     (* Semiring rules *)
 
     add_comm : forall (x y : X), add x y = add y x;
@@ -35,13 +32,9 @@ Class Semiring (X : Type) :=
     mul_one_r : forall (x : X), mul x one = x;
   }.
 
-Instance BoolSemiring : Semiring bool :=
-  {
-    zero := false;
-    one := true;
-    add x y := x || y;
-    mul x y := x && y;
-  }.
+Instance BoolSemiring :
+  Semiring false true (orb) (andb) :=
+  {}.
   (* add_comm *)
   Proof.
     intros. apply orb_comm.
@@ -78,13 +71,9 @@ Instance BoolSemiring : Semiring bool :=
     intros. apply andb_true_r.
   Defined.
 
-Instance NatSemiring : Semiring nat :=
-  {
-    zero := 0;
-    one := 1;
-    add := Nat.add;
-    mul := Nat.mul;
-  }.
+Instance NatSemiring : Semiring
+  0 1 Nat.add Nat.mul :=
+  {}.
   (* add_comm *)
   Proof.
     intros. apply Nat.add_comm.
