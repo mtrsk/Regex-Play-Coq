@@ -1,10 +1,14 @@
 Require Import Coq.Lists.List.
 Import ListNotations.
 
-Require Import Coq.Bool.Bool Coq.Strings.Ascii.
+Require Import
+        Coq.Bool.Bool
+        Coq.Strings.Ascii.
+
 Local Open Scope char.
 
-Require Import Utils AsciiStrings.
+Require Import Utils.
+Require Import AsciiStrings.
 
 Inductive regex : Type :=
   | Eps : regex
@@ -31,8 +35,7 @@ Fixpoint accept (r : regex) (u : string) : bool :=
     | Sym c => eq_string [c] u
     | Alt p q => accept p u || accept q u
     | Seq p q =>
-      or_fold (map (fun '(u1, u2) =>
-                      accept p u1 && accept q u2)
+      or_fold (map (fun '(u1, u2) => accept p u1 && accept q u2)
                    (split u))
     | Rep x =>
       let mparts r' m :=
