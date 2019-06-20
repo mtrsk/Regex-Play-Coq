@@ -4,7 +4,7 @@ Import ListNotations.
 Require Import Coq.Bool.Bool Coq.Strings.Ascii.
 Local Open Scope char.
 
-Require Import AsciiStrings.
+From SRC Require Export CStrings.
 
 (* Act II - Scene 0, Before Semirings *)
 

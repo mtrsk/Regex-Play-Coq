@@ -5,8 +5,7 @@ Require Import
         Coq.Strings.Ascii
         Coq.Strings.String.
 
-Require Import Utils.
-Require Import CStrings.
+From SRC Require Export Utils CStrings.
 
 Inductive regex : Type :=
   | Eps : regex

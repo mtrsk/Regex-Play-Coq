@@ -44,6 +44,8 @@ Fixpoint show_lstr (s : lstring) : string :=
     | x::xs => (String x "") ++ show_lstr xs
   end.
 
+Definition show_ascii (c : ascii) : string := String c "".
+
 Class Show A : Type :=
   {
     show : A -> string
@@ -53,3 +55,9 @@ Instance ShowLStr : Show lstring :=
   {
     show := show_lstr
   }.
+
+Instance showAscii: Show ascii :=
+  {
+    show := show_ascii
+  }.
+
