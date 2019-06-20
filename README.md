@@ -1,8 +1,17 @@
 # Regex-Play-Coq
 Regex Play in Coq
 
-## Compiling
+## Running
+
+### With Nix
 
 ```
-$ make check
+$ nix-shell$
+```
+
+### Docker
+
+```
+$ docker image build -t coqproject .
+$ docker container run --rm -it coqproject nix-shell
 ```
