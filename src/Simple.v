@@ -1,14 +1,12 @@
-Require Import Coq.Lists.List.
-Import ListNotations.
+Require Import Coq.Lists.List. Import ListNotations.
 
 Require Import
         Coq.Bool.Bool
-        Coq.Strings.Ascii.
-
-Local Open Scope char.
+        Coq.Strings.Ascii
+        Coq.Strings.String.
 
 Require Import Utils.
-Require Import AsciiStrings.
+Require Import CStrings.
 
 Inductive regex : Type :=
   | Eps : regex
@@ -17,7 +15,7 @@ Inductive regex : Type :=
   | Seq : regex -> regex -> regex
   | Rep : regex -> regex.
 
-Definition is_null (s : string) : bool :=
+Definition is_null (s : lstring) : bool :=
   match s with
     | [] => true
     | _  => false
@@ -29,17 +27,17 @@ Definition or_fold (l : list bool) : bool :=
 Definition and_fold (l : list bool) : bool :=
   fold_right (andb) true l.
 
-Fixpoint accept (r : regex) (u : string) : bool :=
+Fixpoint accept' (r : regex) (u : lstring) : bool :=
   match r with
     | Eps => is_null u
-    | Sym c => eq_string [c] u
-    | Alt p q => accept p u || accept q u
+    | Sym c => eq_lstring [c] u
+    | Alt p q => accept' p u || accept' q u
     | Seq p q =>
-      or_fold (map (fun '(u1, u2) => accept p u1 && accept q u2)
+      or_fold (map (fun '(u1, u2) => accept' p u1 && accept' q u2)
                    (split u))
     | Rep x =>
       let mparts r' m :=
-          map (fun x =>  accept r' x) m in
+          map (fun x =>  accept' r' x) m in
       let nparts r' m :=
           map (fun x => mparts r' x) m in
       let result r' m :=
@@ -48,3 +46,7 @@ Fixpoint accept (r : regex) (u : string) : bool :=
       in
       result x u
   end.
+
+Definition accept (r : regex) (u : string) : bool :=
+  accept' r (str_to_lstr u).
+
