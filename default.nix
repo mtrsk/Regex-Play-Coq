@@ -1,4 +1,4 @@
-{ nixpkgs ? import <nixpkgs> {}
+{ nixpkgs ? import ./pinned-nixpkgs.nix {json = ./.nixpkgs-version.json;}
 , coq ? nixpkgs.coq
 , ocaml ? nixpkgs.ocaml
 }:
