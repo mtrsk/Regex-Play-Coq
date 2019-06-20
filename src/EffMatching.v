@@ -1,7 +1,11 @@
-Require Import Coq.Lists.List.
-Import ListNotations.
+Require Import Coq.Lists.List. Import ListNotations.
 
-Require Import Coq.Bool.Bool Coq.Strings.Ascii.
+Require Import
+        Coq.Bool.Bool
+        Coq.Strings.Ascii
+        Coq.Strings.String.
+
+Local Open Scope string.
 Local Open Scope char.
 
 From SRC Require Export CStrings.
@@ -29,7 +33,7 @@ Fixpoint final (x : regex) : bool :=
     | Eps => false
     | Sym b _ => b
     | Alt p q => final p || final q
-    | Seq p q => final p && final q
+    | Seq p q => final p && empty q || final q
     | Rep r => final r
   end.
 
@@ -38,9 +42,9 @@ Fixpoint shift (m : bool) (x : regex) (c : ascii)
   match x with
     | Eps => Eps
     | Sym _ x =>
-      Sym (m && eq_ascii x c) x
+      Sym (m && (eq_ascii x c)) x
     | Alt p q =>
-      Alt (shift m p c) (shift m p c)
+      Alt (shift m p c) (shift m q c)
     | Seq p q =>
       Seq (shift m p c)
           (shift (m && empty p || final q) q c)
@@ -48,10 +52,17 @@ Fixpoint shift (m : bool) (x : regex) (c : ascii)
       Rep (shift (m || final r) r c)
   end.
 
-(* TODO fix rmatch *)
-Definition rmatch (r : regex) (s : string) : bool :=
+Definition rmatch' (r : regex) (s : lstring) : bool :=
   match s with
     | [] => empty r
     | (c :: cs) =>
-      final (fold_left (shift false) (shift true r c) cs)
+      final (fold_left (shift false) cs (shift true r c))
   end.
+
+Definition rmatch (r : regex) (s : string) : bool :=
+  rmatch' r (str_to_lstr s).
+
+Compute shift true (Seq (Sym false "a") (Rep (Sym false "b"))) "a".
+Compute shift true (Seq (Sym true "a") (Rep (Sym false "b"))) "b".
+Compute rmatch (Seq (Sym true "a") (Sym false "b")) "ab".
+
