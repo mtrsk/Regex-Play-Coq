@@ -12,6 +12,7 @@ Import QcDefaultNotation. Open Scope qc_scope.
 Import GenLow GenHigh.
 
 Local Open Scope string.
+Local Open Scope char.
 
 Fixpoint show_regex (r : regex) : string :=
   match r with
@@ -32,6 +33,13 @@ Instance ShowRegex : Show regex :=
 
 Definition genAscii : G ascii :=
   (liftM ascii_of_nat (choose (97,122))).
+
+Fixpoint genString (n : nat) (g1 : G ascii)
+  : G string :=
+  match n with
+    | 0 => ret EmptyString
+    | S m => liftM2 String g1 (genString m g1)
+  end.
 
 Fixpoint genRegex (n : nat) (g1 : G ascii) (g2 : G ascii)
   : G regex :=
