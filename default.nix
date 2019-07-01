@@ -5,21 +5,24 @@
 
 with nixpkgs;
 
+let
+  ocamlPkgs = with coq.ocamlPackages; [
+      camlp5
+      findlib
+  ];
+  coqPkgs = with coq.coqPackages; [
+      coq-ext-lib
+      QuickChick
+      ssreflect
+  ];
+in
 stdenv.mkDerivation {
   inherit coq;
   inherit ocaml;
 
   name = "coq-env";
 
-  buildInputs = [
-    coq
-  ] ++ (with coq.ocamlPackages; [
-    ocaml
-    camlp5
-    findlib
-  ]) ++ (with coqPackages; [
-    coq-ext-lib
-    QuickChick
-    ssreflect
-  ]);
+  src = ./src;
+
+  buildInputs = [ coq ocaml ] ++ ocamlPackages ++ coqPackages;
 }

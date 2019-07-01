@@ -46,12 +46,12 @@ Fixpoint genRegex (n : nat) (g1 : G ascii) (g2 : G ascii)
   match n with
     | 0 => liftM Sym g1
     | S m =>
-      oneOf [
-          ret Eps;
-          liftM Sym genAscii;
-          liftM2 Alt (genRegex m g1 g2) (genRegex m g2 g1);
-          liftM2 Seq (genRegex m g1 g2) (genRegex m g2 g1);
-          liftM Rep (genRegex m g1 g2)
+      freq [
+          (1, ret Eps);
+          (m, liftM Sym genAscii);
+          (m, liftM2 Alt (genRegex m g1 g2) (genRegex m g2 g1));
+          (m, liftM2 Seq (genRegex m g1 g2) (genRegex m g2 g1));
+          (m, liftM Rep (genRegex m g1 g2))
       ]
   end.
 
