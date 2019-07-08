@@ -32,6 +32,18 @@ Instance ShowRegex : Show regex :=
     show := show_regex
   }.
 
+Fixpoint show_lstring (l : lstring) : string :=
+  match l with
+    | [] => "ε"
+    | [x] => (String x "")
+    | x::xs => (String x "") ++ show_lstring xs
+  end.
+
+Instance ShowLString : Show lstring :=
+  {
+    show := show_lstring
+  }.
+
 Definition genAscii : G ascii :=
   (liftM ascii_of_nat (choose (97,122))).
 
@@ -41,6 +53,9 @@ Fixpoint genString (n : nat) (g1 : G ascii)
     | 0 => ret EmptyString
     | S m => liftM2 String g1 (genString m g1)
   end.
+
+Definition genLString (n : nat) :=
+  listOf genAscii.
 
 Fixpoint genRegex (n : nat) (g1 : G ascii) (g2 : G ascii)
   : G regex :=
