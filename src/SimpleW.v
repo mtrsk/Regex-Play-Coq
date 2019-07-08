@@ -10,14 +10,13 @@ From SRC Require Export Utils CStrings Simple Semiring.
 Local Open Scope char.
 
 (* Act 1 - Scene II, Adding Weights *)
-
 Inductive regex_w {X : Type} (c : ascii) (s : X)
-  : Type :=
-  | Eps_w : regex_w c s
+  :=
+  | Eps_w
   | Sym_w : (ascii -> X) -> regex_w c s
   | Alt_w : regex_w c s -> regex_w c s -> regex_w c s
   | Seq_w : regex_w c s -> regex_w c s -> regex_w c s
   | Rep_w : regex_w c s -> regex_w c s.
 
-Definition sym {X : Type} `{Semiring X} (c : ascii) :=
-  Sym_w (fun x : ascii => if eq_ascii x c then one else zero).
+Definition aux {X : Type} `{X : Semiring} (c : ascii) :=
+  fun x => if eq_ascii c x then one else zero.

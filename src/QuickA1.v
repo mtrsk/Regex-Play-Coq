@@ -14,6 +14,7 @@ Import GenLow GenHigh.
 Local Open Scope string.
 Local Open Scope char.
 
+
 Fixpoint show_regex (r : regex) : string :=
   match r with
     | Eps => "ε"

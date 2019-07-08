@@ -3,7 +3,7 @@ all:
 	$(MAKE) clean
 
 check:
-	./compile.sh
+	bash ./compile.sh
 
 clean:
 	rm src/*.vo
