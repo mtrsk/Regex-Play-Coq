@@ -57,18 +57,18 @@ Fixpoint genString (n : nat) (g1 : G ascii)
 Definition genLString (n : nat) :=
   listOf genAscii.
 
-Fixpoint genRegex (n : nat) (g1 : G ascii) (g2 : G ascii)
+Fixpoint genRegex (n : nat) (g : G ascii)
   : G regex :=
   match n with
-    | 0 => liftM Sym g1
+    | 0 => liftM Sym g
     | S m =>
       freq [
           (1, ret Eps);
-          (m, liftM Sym genAscii);
-          (m, liftM2 Alt (genRegex m g1 g2) (genRegex m g2 g1));
-          (m, liftM2 Seq (genRegex m g1 g2) (genRegex m g2 g1));
-          (m, liftM Rep (genRegex m g1 g2))
+          (3, liftM Sym genAscii);
+          (4, liftM2 Alt (genRegex m g) (genRegex m g));
+          (4, liftM2 Seq (genRegex m g) (genRegex m g));
+          (3, liftM Rep (genRegex m g))
       ]
   end.
 
-Sample (genRegex 5 (genAscii) (genAscii)).
+Sample (genRegex 5 genAscii).
