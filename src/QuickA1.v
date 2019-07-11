@@ -64,7 +64,7 @@ Fixpoint genRegex (n : nat) (g : G ascii)
     | S m =>
       freq [
           (1, ret Eps);
-          (3, liftM Sym genAscii);
+          (3, liftM Sym g);
           (4, liftM2 Alt (genRegex m g) (genRegex m g));
           (4, liftM2 Seq (genRegex m g) (genRegex m g));
           (3, liftM Rep (genRegex m g))
