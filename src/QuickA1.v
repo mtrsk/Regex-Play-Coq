@@ -54,8 +54,10 @@ Fixpoint genString (n : nat) (g1 : G ascii)
     | S m => liftM2 String g1 (genString m g1)
   end.
 
-Definition genLString (n : nat) :=
-  listOf genAscii.
+Definition genLString (n : nat) (g : G ascii) :=
+  vectorOf n g.
+
+Sample (genLString 5 genAscii).
 
 Fixpoint genRegex (n : nat) (g : G ascii)
   : G regex :=
